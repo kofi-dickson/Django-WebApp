@@ -10,6 +10,8 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" xintegrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
+
     {% if title %}
       <title>Django Blog - {{ title }}</title>
     {% else %}
@@ -41,6 +43,13 @@
     </header>
 
     <main role="main" class="container">
+      <!-- Welcome section for the user -->
+      <div class="jumbotron mt-4 p-5 rounded">
+        <h1 class="display-4">Welcome to my page!</h1>
+        <p class="lead">This is my personal Django project. You can check out the code on GitHub!</p>
+        <a class="btn btn-primary btn-lg" href="https://github.com/your-username/your-repo" target="_blank" role="button">View on GitHub</a>
+      </div>
+
       <div class="row">
         <div class="col-md-8">
           {% block content %}{% endblock %}
