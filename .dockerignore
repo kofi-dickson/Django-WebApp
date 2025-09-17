@@ -1,0 +1,25 @@
+Python
+pycache
+*.pyc
+
+Virtual environments
+venv/
+env/
+
+Editor/OS files
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+Logs and databases
+*.log
+*.sqlite3
+
+Docker specific
+Dockerfile
+.dockerignore
+
+Git
+.git
+.gitignore
