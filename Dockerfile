@@ -1,33 +1,27 @@
-# Builder Stage: Installs dependencies
-FROM python:3.10-slim AS builder
-
-# Sets the working directory inside the container
-WORKDIR /usr/src/app
-
-# Copies requirements for build cache optimization
-COPY requirements.txt .
-
-# Installs all Python packages
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Release Stage: Creates the final, lean image
+#Use an official Python runtime as a parent image
 FROM python:3.10-slim
 
-# Creates and switches to a dedicated non-root user for security
-RUN adduser --system appuser
-USER appuser
-
-# Sets the application's working directory
+#Set the working directory in the container
 WORKDIR /usr/src/app
 
-# Copies the installed packages from the builder stage
-COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
+#Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV DJANGO_SETTINGS_MODULE=django_web_app.settings
 
-# Copies the application code from the host machine to the container
+#Install dependencies
+COPY ./requirements.txt .
+RUN python -m pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+#Copy the rest of the project into the working directory
 COPY . .
 
-# Exposes the port Gunicorn will listen on
+#Run collectstatic to prepare static files
+RUN python manage.py collectstatic --noinput
+
+#Expose the port Gunicorn will listen on
 EXPOSE 8000
 
-# Runs the application with Gunicorn, pointing to the correct WSGI file
-CMD ["gunicorn", "django_web_app.wsgi:application", "--bind", "0.0.0.0:8000"]
+#Run Gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "django_web_app.wsgi:application"]
